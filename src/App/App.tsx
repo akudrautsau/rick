@@ -1,27 +1,19 @@
 import { useEffect, useState, useCallback, ChangeEvent } from 'react';
 import { observer } from 'mobx-react-lite';
 import useStoreContext from '@store/store.context.ts';
-import { Grid, Pagination, InputBase, Select } from '@mantine/core';
+import { Grid, InputBase, Pagination, Select } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
-import './App.css';
-import { useUpdateUrlParams } from '@hooks/useUpdateUrlParams.ts';
 import { Card } from '@/components/Card.tsx';
-
-interface Character {
-  id: string;
-  name: string;
-  image: string;
-  gender: string;
-  species: string;
-  status: string;
-}
+import { useUpdateUrlParams } from '@hooks/useUpdateUrlParams.ts';
+import { CharacterData } from '@/types';
+import './App.css';
 
 interface CharactersStore {
-  characters: Character[];
+  characters: CharacterData[];
   loading: boolean;
   currentPage: number;
-  chatactersInfo?: {
+  charactersInfo?: {
     pages: number;
   };
   getCharactersData: (params: { page: number; name?: string; status?: string }) => void;
@@ -29,8 +21,8 @@ interface CharactersStore {
 }
 
 function App() {
-  const [valueName, setValueName] = useState<string>('');
-  const [valueStatus, setValueStatus] = useState<string>('');
+  const [valueName, setValueName] = useState<string | null>(null);
+  const [valueStatus, setValueStatus] = useState<string | null>(null);
   const { charactersStore } = useStoreContext() as { charactersStore: CharactersStore };
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,18 +36,14 @@ function App() {
   };
 
   const debouncedGetCharactersData = useCallback(
-    debounce((name: string, status: string) => {
+    debounce((name: string | null, status: string | null) => {
       updateURLParams({ page: 1, name, status });
     }, 300),
     [charactersStore]
   );
 
-  useEffect(() => {
-    debouncedGetCharactersData(valueName, valueStatus);
-  }, [valueName, valueStatus, debouncedGetCharactersData]);
-
   const handleInputChange =
-    (setter: React.Dispatch<React.SetStateAction<string>>, paramName: 'name' | 'status') =>
+    (setter: React.Dispatch<React.SetStateAction<string | null>>, paramName: 'name' | 'status') =>
     (event: ChangeEvent<HTMLInputElement> | string) => {
       const newValue = typeof event === 'string' ? event : event.currentTarget.value;
       setter(newValue);
@@ -77,7 +65,7 @@ function App() {
     let page = parseInt(searchParams.get('page') as string) || 1;
     const status = searchParams.get('status') as string;
     const name = searchParams.get('name') as string;
-    if (!charactersStore.chatactersInfo?.pages || +page > charactersStore.chatactersInfo?.pages) page = 1;
+    if (!charactersStore.charactersInfo?.pages || +page > charactersStore.charactersInfo?.pages) page = 1;
 
     setValueName(name);
     setValueStatus(status);
@@ -94,7 +82,7 @@ function App() {
           onChange={handleInputChange(setValueName, 'name')}
           mt='md'
           w={600}
-          defaultValue={valueName}
+          defaultValue={valueName ?? ''}
         />
         <Select
           label='Select status for filter by status'
@@ -102,7 +90,7 @@ function App() {
           onChange={(value) => handleInputChange(setValueStatus, 'status')(value || '')}
           mt='md'
           w={600}
-          value={valueStatus}
+          value={valueStatus ?? ''}
           data={[
             { value: 'alive', label: 'Alive' },
             { value: 'dead', label: 'Dead' },
@@ -128,7 +116,7 @@ function App() {
       </div>
       <Pagination
         className={'paginator'}
-        total={charactersStore.chatactersInfo?.pages || 1}
+        total={charactersStore.charactersInfo?.pages || 1}
         value={charactersStore.currentPage}
         onChange={handlePageChange}
       />

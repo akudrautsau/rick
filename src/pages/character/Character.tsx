@@ -3,15 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Text, Image, Loader } from '@mantine/core';
 import useStoreContext from '@store/store.context.ts';
 import { observer } from 'mobx-react-lite';
-
-interface CharacterData {
-  id: string;
-  name: string;
-  image: string;
-  gender: string;
-  species: string;
-  status: string;
-}
+import { CharacterData } from '@/types';
 
 interface CharacterStore {
   character?: CharacterData | null;

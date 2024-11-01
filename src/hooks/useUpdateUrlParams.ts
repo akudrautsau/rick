@@ -2,14 +2,14 @@ import useStoreContext from '@store/store.context.ts';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 interface UseUpdateUrlParamsProps {
-  valueName: string;
-  valueStatus: string;
+  valueName: string | null;
+  valueStatus: string | null;
 }
 
 interface UpdateURLParamsOptions {
   page?: number;
-  name?: string;
-  status?: string;
+  name?: string | null;
+  status?: string | null;
 }
 
 export const useUpdateUrlParams = ({ valueName, valueStatus }: UseUpdateUrlParamsProps) => {

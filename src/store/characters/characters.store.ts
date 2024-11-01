@@ -1,14 +1,6 @@
 import { makeAutoObservable, observable } from 'mobx';
 import { getCharacters } from '@services/api/characters.api.ts';
-
-interface CharacterData {
-  id: string;
-  name: string;
-  image: string;
-  gender: string;
-  species: string;
-  status: string;
-}
+import { CharacterData } from '@/types';
 
 interface CharactersInfo {
   count: number;
@@ -19,13 +11,13 @@ interface CharactersInfo {
 
 interface GetCharactersParams {
   page?: number;
-  name?: string;
-  status?: string;
+  name?: string | null;
+  status?: string | null;
 }
 
 export class CharactersStore {
   characters = observable.array<CharacterData>([]);
-  chatactersInfo: CharactersInfo | null = null;
+  charactersInfo: CharactersInfo | null = null;
   currentPage = 1;
   loading = false;
 
@@ -53,7 +45,7 @@ export class CharactersStore {
   }
 
   setCharactersInfo(info: CharactersInfo | null): void {
-    this.chatactersInfo = info;
+    this.charactersInfo = info;
   }
 
   setCurrentPage(page: number): void {

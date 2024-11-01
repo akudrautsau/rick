@@ -2,7 +2,15 @@ import http from '@services/axios';
 
 const path = 'https://rickandmortyapi.com/api/character';
 
-export async function getCharacters({ page = 1, name = '', status = '' }) {
+export async function getCharacters({
+  page = 1,
+  name = '',
+  status = '',
+}: {
+  page?: number;
+  name?: string | null;
+  status?: string | null;
+}) {
   try {
     const params = new URLSearchParams();
 

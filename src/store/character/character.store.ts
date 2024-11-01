@@ -1,14 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import { getCharacter } from '@services/api/characters.api.ts';
-
-interface CharacterData {
-  id: string;
-  name: string;
-  image: string;
-  gender: string;
-  species: string;
-  status: string;
-}
+import { CharacterData } from '@/types';
 
 export class CharacterStore {
   character: CharacterData | null = null;

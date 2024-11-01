@@ -1,17 +1,9 @@
 import { FC, MouseEvent } from 'react';
 import { Grid, Image, Text } from '@mantine/core';
-
-interface Character {
-  id: string;
-  name: string;
-  image: string;
-  gender: string;
-  species: string;
-  status: string;
-}
+import { CharacterData } from '@/types';
 
 interface CardProps {
-  character: Character;
+  character: CharacterData;
   onClick?: (event: MouseEvent<HTMLDivElement>) => void;
 }
 
