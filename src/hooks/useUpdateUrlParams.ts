@@ -1,18 +1,13 @@
 import useStoreContext from '@store/store.context.ts';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-interface UseUpdateUrlParamsProps {
-  valueName: string | null;
-  valueStatus: string | null;
-}
-
 interface UpdateURLParamsOptions {
   page?: number;
   name?: string | null;
   status?: string | null;
 }
 
-export const useUpdateUrlParams = ({ valueName, valueStatus }: UseUpdateUrlParamsProps) => {
+export const useUpdateUrlParams = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { charactersStore } = useStoreContext();
@@ -40,12 +35,6 @@ export const useUpdateUrlParams = ({ valueName, valueStatus }: UseUpdateUrlParam
     navigate({
       pathname: location.pathname,
       search: `?${searchParams.toString()}`,
-    });
-
-    charactersStore.getCharactersData({
-      page: page || charactersStore.currentPage,
-      name: name !== undefined ? name : valueName,
-      status: status !== undefined ? status : valueStatus,
     });
   };
 

@@ -18,7 +18,7 @@ interface GetCharactersParams {
 export class CharactersStore {
   characters = observable.array<CharacterData>([]);
   charactersInfo: CharactersInfo | null = null;
-  currentPage = 1;
+  currentPage = 0;
   loading = false;
 
   constructor() {

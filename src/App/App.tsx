@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, ChangeEvent } from 'react';
+import { useEffect, useState, useCallback, ChangeEvent, SetStateAction, Dispatch } from 'react';
 import { observer } from 'mobx-react-lite';
 import useStoreContext from '@store/store.context.ts';
 import { Grid, InputBase, Pagination, Select } from '@mantine/core';
@@ -6,28 +6,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
 import { Card } from '@/components/Card.tsx';
 import { useUpdateUrlParams } from '@hooks/useUpdateUrlParams.ts';
-import { CharacterData } from '@/types';
 import './App.css';
-
-interface CharactersStore {
-  characters: CharacterData[];
-  loading: boolean;
-  currentPage: number;
-  charactersInfo?: {
-    pages: number;
-  };
-  getCharactersData: (params: { page: number; name?: string; status?: string }) => void;
-  setCurrentPage: (page: number) => void;
-}
 
 function App() {
   const [valueName, setValueName] = useState<string | null>(null);
   const [valueStatus, setValueStatus] = useState<string | null>(null);
-  const { charactersStore } = useStoreContext() as { charactersStore: CharactersStore };
+  const { charactersStore } = useStoreContext();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { updateURLParams } = useUpdateUrlParams({ valueName, valueStatus });
+  const { updateURLParams } = useUpdateUrlParams();
 
   const handlePageChange = (page: number) => {
     if (page !== charactersStore.currentPage) {
@@ -39,22 +27,20 @@ function App() {
     debounce((name: string | null, status: string | null) => {
       updateURLParams({ page: 1, name, status });
     }, 300),
-    [charactersStore]
+    []
   );
 
   const handleInputChange =
-    (setter: React.Dispatch<React.SetStateAction<string | null>>, paramName: 'name' | 'status') =>
-    (event: ChangeEvent<HTMLInputElement> | string) => {
-      const newValue = typeof event === 'string' ? event : event.currentTarget.value;
+    (setter: Dispatch<SetStateAction<string | null>>) => (event: ChangeEvent<HTMLInputElement> | string | null) => {
+      const newValue = typeof event === 'string' || event == null ? event : event.currentTarget.value;
       setter(newValue);
 
       charactersStore.setCurrentPage(1);
-
-      debouncedGetCharactersData(
-        paramName === 'name' ? newValue : valueName,
-        paramName === 'status' ? newValue : valueStatus
-      );
     };
+
+  useEffect(() => {
+    debouncedGetCharactersData(valueName, valueStatus);
+  }, [valueName, valueStatus, debouncedGetCharactersData]);
 
   const handleCharacterClick = (characterId: string) => {
     navigate(`/character/${characterId}`);
@@ -70,7 +56,12 @@ function App() {
     setValueName(name);
     setValueStatus(status);
 
-    updateURLParams({ page, status, name });
+    if (searchParams.size)
+      charactersStore.getCharactersData({
+        page,
+        name,
+        status,
+      });
   }, [location.search]);
 
   return (
@@ -79,7 +70,7 @@ function App() {
       <div className='filters'>
         <InputBase
           placeholder={'Enter name for filter by name'}
-          onChange={handleInputChange(setValueName, 'name')}
+          onChange={handleInputChange(setValueName)}
           mt='md'
           w={600}
           defaultValue={valueName ?? ''}
@@ -87,10 +78,10 @@ function App() {
         <Select
           label='Select status for filter by status'
           placeholder='Select status'
-          onChange={(value) => handleInputChange(setValueStatus, 'status')(value || '')}
+          onChange={(value) => handleInputChange(setValueStatus)(value || null)}
           mt='md'
           w={600}
-          value={valueStatus ?? ''}
+          value={valueStatus || null}
           data={[
             { value: 'alive', label: 'Alive' },
             { value: 'dead', label: 'Dead' },

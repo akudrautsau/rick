@@ -1,34 +1,35 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "strictNullChecks": true,
 
     /* Bundler mode */
-    "moduleResolution": "Bundler",
+    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "allowJs": true,
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
     "paths": {
-      "@compatibility/*": ["./src/compatibility/*"],
-      "@common/*": ["./src/common/*"],
       "@assets/*": ["./src/assets/*"],
-      "@layouts/*": ["./src/layouts/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@services/*": ["./src/services/*"],
-      "@constants/*": ["./src/constants/*"],
-      "@typesDir/*": ["./src/types/*"],
       "@store/*": ["./src/store/*"],
 
       "@/*": ["./src/*"],
