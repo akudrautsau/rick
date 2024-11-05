@@ -51,7 +51,7 @@ function App() {
     let page = parseInt(searchParams.get('page') as string) || 1;
     const status = searchParams.get('status') as string;
     const name = searchParams.get('name') as string;
-    if (!charactersStore.charactersInfo?.pages || +page > charactersStore.charactersInfo?.pages) page = 1;
+    if (!charactersStore.charactersInfoPages || +page > charactersStore.charactersInfoPages) page = 1;
 
     setValueName(name);
     setValueStatus(status);
@@ -107,7 +107,7 @@ function App() {
       </div>
       <Pagination
         className={'paginator'}
-        total={charactersStore.charactersInfo?.pages || 1}
+        total={charactersStore.charactersInfoPages || 1}
         value={charactersStore.currentPage}
         onChange={handlePageChange}
       />

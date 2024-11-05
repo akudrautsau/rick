@@ -3,10 +3,7 @@ import { getCharacters } from '@services/api/characters.api.ts';
 import { CharacterData } from '@/types';
 
 interface CharactersInfo {
-  count: number;
   pages: number;
-  next: string | null;
-  prev: string | null;
 }
 
 interface GetCharactersParams {
@@ -17,7 +14,7 @@ interface GetCharactersParams {
 
 export class CharactersStore {
   characters = observable.array<CharacterData>([]);
-  charactersInfo: CharactersInfo | null = null;
+  charactersInfoPages = 1;
   currentPage = 0;
   loading = false;
 
@@ -44,8 +41,8 @@ export class CharactersStore {
     this.characters.replace(newCharacters);
   }
 
-  setCharactersInfo(info: CharactersInfo | null): void {
-    this.charactersInfo = info;
+  setCharactersInfo(info: CharactersInfo): void {
+    this.charactersInfoPages = info.pages;
   }
 
   setCurrentPage(page: number): void {

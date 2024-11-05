@@ -25,7 +25,7 @@ export async function getCharacters({
   }
 }
 
-export async function getCharacter({ id }: { id?: string }) {
+export async function getCharacter({ id }: { id?: number }) {
   try {
     return await http.get(`${path}/${id}`);
   } catch (e) {

@@ -10,7 +10,7 @@ export class CharacterStore {
     makeAutoObservable(this);
   }
 
-  async getCharacterData({ id }: { id?: string }): Promise<void> {
+  async getCharacterData({ id }: { id?: number }): Promise<void> {
     this.setLoading(true);
     try {
       const character = await getCharacter({ id });
